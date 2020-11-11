@@ -26,11 +26,12 @@ import java.io.PrintWriter;
 
 public class MainActivity extends AppCompatActivity {
     TextView x,y,z;
+    EditText nameText;
     Button toggleButton;
     String data;
-    String name;
     boolean flag;
     long start;
+    File file;
 
     private SensorManager mSensorManager;
     //private Sensor mGyroscope;
@@ -58,11 +59,13 @@ public class MainActivity extends AppCompatActivity {
         x = (TextView)findViewById(R.id.textView1);
         y = (TextView)findViewById(R.id.textView2);
         z = (TextView)findViewById(R.id.textView3);
+        nameText = (EditText)findViewById(R.id.nameText);
 
         toggleButton = (Button)findViewById(R.id.toggleButton);
 
         data = null;
         flag = true;
+        start = System.currentTimeMillis();
 
         toggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,12 +78,17 @@ public class MainActivity extends AppCompatActivity {
 
     public void start(){
         toggleButton.setText("실험 끝");
+        start = System.currentTimeMillis();
         flag = false;
     }
     public void end(){
         toggleButton.setText("실험 시작");
         //pushingData(); //파일에 데이터 밀어 넣기
         flag = true;
+
+        onPause();
+        y.setText(String.valueOf(data));
+        data = null;
     }
 
     private class AccelerometerListner implements SensorEventListener {
@@ -102,6 +110,11 @@ public class MainActivity extends AppCompatActivity {
                 x.setText(String.valueOf(event.values[0]));
                 y.setText(String.valueOf(event.values[1]));
                 z.setText(String.valueOf(event.values[2]));
+
+                data += String.valueOf(System.currentTimeMillis()-start) + " "
+                        + String.valueOf(event.values[0]) + " "
+                        + String.valueOf(event.values[1]) + " "
+                        + String.valueOf(event.values[2]) + "\n";
             }
         }
 
