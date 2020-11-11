@@ -32,8 +32,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="160dp"
+        android:layout_marginStart="200dp"
+        android:layout_marginTop="80dp"
         android:text="Y" />
 
     <TextView
@@ -43,8 +43,28 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="240dp"
+        android:layout_marginStart="300dp"
+        android:layout_marginTop="80dp"
         android:text="Z" />
+
+    <EditText
+        android:id="@+id/nameText"
+        android:hint="피실험자 이름"
+        android:layout_width="169dp"
+        android:layout_height="79dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="119dp"
+        android:layout_marginTop="200dp" />
+
+    <Button
+        android:id="@+id/toggleButton"
+        android:hint=""
+        android:layout_width="243dp"
+        android:layout_height="201dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="148dp" />
 
 </RelativeLayout>
