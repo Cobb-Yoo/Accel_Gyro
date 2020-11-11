@@ -60,7 +60,7 @@
 
     <Button
         android:id="@+id/toggleButton"
-        android:hint=""
+        android:text="aslfjasldkfj"
         android:layout_width="243dp"
         android:layout_height="201dp"
         android:layout_alignParentBottom="true"

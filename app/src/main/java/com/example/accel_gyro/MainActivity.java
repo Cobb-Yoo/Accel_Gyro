@@ -26,6 +26,11 @@ import java.io.PrintWriter;
 
 public class MainActivity extends AppCompatActivity {
     TextView x,y,z;
+    Button toggleButton;
+    String data;
+    String name;
+    boolean flag;
+    long start;
 
     private SensorManager mSensorManager;
     //private Sensor mGyroscope;
@@ -53,6 +58,29 @@ public class MainActivity extends AppCompatActivity {
         x = (TextView)findViewById(R.id.textView1);
         y = (TextView)findViewById(R.id.textView2);
         z = (TextView)findViewById(R.id.textView3);
+
+        toggleButton = (Button)findViewById(R.id.toggleButton);
+
+        data = null;
+        flag = true;
+
+        toggleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                if(flag) start();
+                else end();
+            }
+        });
+    }
+
+    public void start(){
+        toggleButton.setText("실험 끝");
+        flag = false;
+    }
+    public void end(){
+        toggleButton.setText("실험 시작");
+        //pushingData(); //파일에 데이터 밀어 넣기
+        flag = true;
     }
 
     private class AccelerometerListner implements SensorEventListener {
@@ -87,7 +115,9 @@ public class MainActivity extends AppCompatActivity {
     // SENSOR_DELAY_NORMAL 화면 방향 전환 등의 일상적인  주기
     // SENSOR_DELAY_GAME 게임에 적합한 주기
     // SENSOR_DELAY_FASTEST 최대한의 빠른 주기
+    public void pushingData(){
 
+    }
 
     //리스너 등록
     protected void onResume() {
