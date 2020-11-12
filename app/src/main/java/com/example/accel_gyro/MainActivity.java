@@ -8,16 +8,21 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -37,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     //private Sensor mGyroscope;
     private Sensor accSensor;
     private SensorEventListener accLisn;
+    private Object environment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
         toggleButton = (Button)findViewById(R.id.toggleButton);
 
-        data = null;
+        data = "";
         flag = true;
         start = System.currentTimeMillis();
 
@@ -78,17 +84,21 @@ public class MainActivity extends AppCompatActivity {
 
     public void start(){
         toggleButton.setText("실험 끝");
+
+        onResume();
         start = System.currentTimeMillis();
+
         flag = false;
     }
+
     public void end(){
         toggleButton.setText("실험 시작");
-        //pushingData(); //파일에 데이터 밀어 넣기
-        flag = true;
 
         onPause();
-        y.setText(String.valueOf(data));
-        data = null;
+
+        pushingData(); //파일에 데이터 밀어 넣기
+        flag = true;
+        data = "";
     }
 
     private class AccelerometerListner implements SensorEventListener {
@@ -129,7 +139,34 @@ public class MainActivity extends AppCompatActivity {
     // SENSOR_DELAY_GAME 게임에 적합한 주기
     // SENSOR_DELAY_FASTEST 최대한의 빠른 주기
     public void pushingData(){
+//Environment.DIRECTORY_DOWNLOADS 파일 경로
+        String state=Environment.getExternalStorageState();
+        if(!state.equals(Environment.MEDIA_MOUNTED)){
+            Toast.makeText(this, "SDcard is not mounted", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
+        String filename = nameText.getText() + ".txt";
+        File[] dirs = getExternalFilesDirs(String.valueOf(nameText.getText()));
+        File path = dirs[0];
+        File file = new File(path, filename);
+
+        if(!file.exists()) file.mkdir();
+
+        try{
+            FileOutputStream fos= new FileOutputStream(file, true);
+            fos.write(data.getBytes());
+            fos.close();
+
+            Toast.makeText(this,"SAVED",Toast.LENGTH_SHORT).show();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        data = path + "/" + filename;
+        y.setText(String.valueOf(dirs[0]));
     }
 
     //리스너 등록
