@@ -151,21 +151,21 @@ public class MainActivity extends AppCompatActivity {
         File path = dirs[0];
         File file = new File(path, filename);
 
-        if(!file.exists()) file.mkdir();
+        if(!path.exists()) path.mkdir();
 
         try{
             FileOutputStream fos= new FileOutputStream(file, true);
-            fos.write(data.getBytes());
-            fos.close();
+            PrintWriter writer= new PrintWriter(fos);
+
+            writer.println(data);
+            writer.flush();
+            writer.close();
 
             Toast.makeText(this,"SAVED",Toast.LENGTH_SHORT).show();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
-        data = path + "/" + filename;
         y.setText(String.valueOf(dirs[0]));
     }
 
