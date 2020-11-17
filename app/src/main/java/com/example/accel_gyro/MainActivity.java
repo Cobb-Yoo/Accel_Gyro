@@ -2,13 +2,17 @@ package com.example.accel_gyro;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,14 +30,18 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
 
 public class MainActivity extends AppCompatActivity {
+    private static final int WRITE_REQUEST_CODE = 43;
+    private ParcelFileDescriptor pfd;
+    private FileOutputStream fileOutputStream;
     TextView x,y,z;
     EditText nameText;
     Button toggleButton;
-    String data;
+    String inputData;
     boolean flag;
     long start;
     File file;
@@ -69,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
         toggleButton = (Button)findViewById(R.id.toggleButton);
 
-        data = "";
+        inputData = "";
         flag = true;
         start = System.currentTimeMillis();
 
@@ -98,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
         pushingData(); //파일에 데이터 밀어 넣기
         flag = true;
-        data = "";
+        inputData = "";
     }
 
     private class AccelerometerListner implements SensorEventListener {
@@ -121,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
                 y.setText(String.valueOf(event.values[1]));
                 z.setText(String.valueOf(event.values[2]));
 
-                data += String.valueOf(System.currentTimeMillis()-start) + " "
+                inputData += String.valueOf(System.currentTimeMillis()-start) + " "
                         + String.valueOf(event.values[0]) + " "
                         + String.valueOf(event.values[1]) + " "
                         + String.valueOf(event.values[2]) + "\n";
@@ -146,27 +154,29 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        String filename = nameText.getText() + ".txt";
+        String fileName = nameText.getText() + ".txt";
         File[] dirs = getExternalFilesDirs(String.valueOf(nameText.getText()));
         File path = dirs[0];
-        File file = new File(path, filename);
+        File file = new File(path, fileName);
 
-        if(!path.exists()) path.mkdir();
+        //if(!file.exists()) {
+        //    file.mkdir();
+        //}
 
         try{
             FileOutputStream fos= new FileOutputStream(file, true);
             PrintWriter writer= new PrintWriter(fos);
 
-            writer.println(data);
+            writer.println(inputData);
             writer.flush();
             writer.close();
 
             Toast.makeText(this,"SAVED",Toast.LENGTH_SHORT).show();
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        y.setText(String.valueOf(dirs[0]));
+        //y.setText(String.valueOf(dirs[0]));
     }
 
     //리스너 등록
